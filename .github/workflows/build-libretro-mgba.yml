@@ -2,8 +2,7 @@ name: Build libretro mgba
 
 on: 
   push:
-  pull_request:
-    branches: '**'
+    branches: [ "master" ]
 
 jobs:
   build-windows-x64:
@@ -108,3 +107,24 @@ jobs:
       with:
         name: mgba_libretro_unix32.so
         path: libretro-mgba/mgba_libretro_unix32.so
+
+  build-osx-x64:
+    runs-on: macos-latest
+    env:
+        platform: osx
+        CC: clang
+        CXX: clang++
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.dylib mgba_libretro_osx64.dylib
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name:  mgba_libretro_osx64.dylib
+        path: libretro-mgba/mgba_libretro_osx64.dylib
