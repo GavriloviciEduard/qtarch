@@ -1,0 +1,130 @@
+name: Build libretro mgba
+
+on: 
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-windows-x64:
+    runs-on: ubuntu-latest
+    container:
+        image: git.libretro.com:5050/libretro-infrastructure/libretro-build-mxe-win-cross-cores:gcc11
+        env:
+            platform: win64
+            ARCH: x86_64
+            MSYSTEM: MINGW64
+            AR: x86_64-w64-mingw32.static-ar
+            AS: x86_64-w64-mingw32.static-as
+            CC: x86_64-w64-mingw32.static-gcc
+            CXX: x86_64-w64-mingw32.static-g++
+            WINDRES: x86_64-w64-mingw32.static-windres
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.dll mgba_libretro_win64.dll
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mgba_libretro_win64.dll
+        path: libretro-mgba/mgba_libretro_win64.dll
+
+  build-windows-x86:
+    runs-on: ubuntu-latest
+    container:
+        image: git.libretro.com:5050/libretro-infrastructure/libretro-build-mxe-win-cross-cores:gcc11
+        env:
+            platform: win32
+            ARCH: x86
+            MSYSTEM: MINGW32
+            AR: i686-w64-mingw32.static-ar
+            AS: i686-w64-mingw32.static-as
+            CC: i686-w64-mingw32.static-gcc
+            CXX: i686-w64-mingw32.static-g++
+            WINDRES: i686-w64-mingw32.static-windres
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.dll mgba_libretro_win32.dll
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mgba_libretro_win32.dll
+        path: libretro-mgba/mgba_libretro_win32.dll
+
+  build-linux-x64:
+    runs-on: ubuntu-latest
+    container:
+        image: git.libretro.com:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:xenial-gcc9
+        env:
+            platform: unix
+            CC: gcc
+            CXX: g++
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.so mgba_libretro_unix64.so
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mgba_libretro_unix64.so
+        path: libretro-mgba/mgba_libretro_unix64.so
+
+  build-linux-x86:
+    runs-on: ubuntu-latest
+    container:
+        image: git.libretro.com:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:xenial-gcc9
+        env:
+            platform: unix
+            ARCH: x86
+            CC: gcc
+            CXX: g++
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.so mgba_libretro_unix32.so
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mgba_libretro_unix32.so
+        path: libretro-mgba/mgba_libretro_unix32.so
+
+  build-osx-x64:
+    runs-on: macos-latest
+    env:
+        platform: osx
+        CC: clang
+        CXX: clang++
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.dylib mgba_libretro_osx64.dylib
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name:  mgba_libretro_osx64.dylib
+        path: libretro-mgba/mgba_libretro_osx64.dylib
