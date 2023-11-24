@@ -61,3 +61,26 @@ jobs:
       with:
         name: mgba_libretro_win32.dll
         path: libretro-mgba/mgba_libretro_win32.dll
+
+  build-linux-x64:
+    runs-on: ubuntu-latest
+    container:
+        image: git.libretro.com:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:xenial-gcc9
+        env:
+            platform: unix
+            CC: gcc
+            CXX: g++
+    steps:
+    - name: Clone libretro-mgba
+      run: |
+        git clone https://github.com/epilogue-co/libretro-mgba
+    - name: Build libretro-mgba
+      run: |
+        cd libretro-mgba/
+        make
+        mv mgba_libretro.so mgba_libretro_unix64.so
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mgba_libretro_unix64.so
+        path: libretro-mgba/mgba_libretro_unix64.so
