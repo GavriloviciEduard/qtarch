@@ -1,9 +1,9 @@
 name: Build libretro mgba
 
-on: 
+on:
   push:
-    branches: [ "master" ]
-
+    branches:
+      - '**'
 jobs:
   build-windows-x64:
     runs-on: ubuntu-latest
@@ -25,7 +25,7 @@ jobs:
     - name: Build libretro-mgba
       run: |
         cd libretro-mgba/
-        make
+        make DEBUG=1
         mv mgba_libretro.dll mgba_libretro_win64.dll
     - name: Upload artifact
       uses: actions/upload-artifact@v3
