@@ -3,7 +3,7 @@ name: Build libretro mgba
 on:
   push:
     branches:
-      - '**'
+      - master
 jobs:
   build-windows-x64:
     runs-on: ubuntu-latest
