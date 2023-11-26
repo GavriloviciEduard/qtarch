@@ -1,0 +1,23 @@
+name: Build qtarch
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-qtarch-x64:
+    runs-on: ubuntu-latest
+    container:
+        image: docker.io/gavriloviciedi/qt:win64s
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+    - name: Build qtarch
+      run: |
+        cmake
+        make
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: qtarch.exe
+        path: ./qtarch.exe
